@@ -31,16 +31,16 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "westpac-puppeteer-2",
+  "name": "westpac-au-scraper",
   "author": "Geoff Lamrock",
-  "module": "dist/westpac-puppeteer-2.esm.js",
+  "module": "dist/westpac-au-scraper.esm.js",
   "size-limit": [
     {
-      "path": "dist/westpac-puppeteer-2.cjs.production.min.js",
+      "path": "dist/westpac-au-scraper.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/westpac-puppeteer-2.esm.js",
+      "path": "dist/westpac-au-scraper.esm.js",
       "limit": "10 KB"
     }
   ],
