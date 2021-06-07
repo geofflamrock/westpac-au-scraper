@@ -22,24 +22,27 @@ function getFileTypeSelector(exportFormat: ExportFormat): string {
 export const exportTransactions = async (
   page: Page,
   accountName: string,
-  startDate: Date,
-  endDate: Date,
+  startDate?: Date,
+  endDate?: Date,
   exportFormat: ExportFormat = ExportFormat.Ofx
 ): Promise<string> => {
   await page.goto(
     'https://banking.westpac.com.au/secure/banking/reportsandexports/exportparameters/2/'
   );
 
-  const startDateFormatted = format(startDate, 'dd/MM/yyyy');
-  const endDateFormatted = format(endDate, 'dd/MM/yyyy');
+  if (startDate !== undefined) {
+    const startDateFormatted = format(startDate, 'dd/MM/yyyy');
+    console.log(`Setting start date '${startDateFormatted}'`);
+    await page.click('#DateRange_StartDate', { clickCount: 3 });
+    await page.type('#DateRange_StartDate', startDateFormatted);
+  }
 
-  console.log(`Setting start date '${startDateFormatted}'`);
-  await page.click('#DateRange_StartDate', { clickCount: 3 });
-  await page.type('#DateRange_StartDate', startDateFormatted);
-
-  console.log(`Setting end date '${endDateFormatted}'`);
-  await page.click('#DateRange_EndDate', { clickCount: 3 });
-  await page.type('#DateRange_EndDate', endDateFormatted);
+  if (endDate !== undefined) {
+    const endDateFormatted = format(endDate, 'dd/MM/yyyy');
+    console.log(`Setting end date '${endDateFormatted}'`);
+    await page.click('#DateRange_EndDate', { clickCount: 3 });
+    await page.type('#DateRange_EndDate', endDateFormatted);
+  }
 
   console.log(`Selecting account '${accountName}'`);
   await page.type('#Accounts_1', accountName);
@@ -47,9 +50,9 @@ export const exportTransactions = async (
   await page.waitForSelector('.autosuggest-suggestions:first-child');
   await page.click('.autosuggest-suggestions:first-child');
 
-  console.log(`Setting export format '${exportFormat}'`);
-  await page.waitForTimeout(2000);
   const fileTypeSelector = getFileTypeSelector(exportFormat);
+  console.log(`Setting export format '${ExportFormat[exportFormat]}'`);
+  await page.waitForTimeout(2000);
   await page.waitForSelector(fileTypeSelector);
   await page.click(fileTypeSelector);
 
