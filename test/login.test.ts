@@ -35,4 +35,18 @@ describe('Login', () => {
 
     throw new Error('Invalid credentials did not throw error');
   });
+
+  it('Login using valid credentials works', async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    try {
+      await login(
+        page,
+        process.env.WESTPAC_USERNAME || '',
+        process.env.WESTPAC_PASSWORD || ''
+      );
+    } finally {
+      await browser.close();
+    }
+  });
 });
