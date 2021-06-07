@@ -19,7 +19,7 @@ function getFileTypeSelector(exportFormat: ExportFormat): string {
   }
 }
 
-export const getWestpacTransactions = async (
+export const exportTransactions = async (
   page: Page,
   accountName: string,
   startDate: Date,
