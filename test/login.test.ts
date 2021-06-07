@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { login } from '../src';
 
 describe('Login', () => {
-  it('Login using invalid format username throws error', async () => {
+  test('Login using invalid format username throws error', async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     try {
@@ -19,7 +19,7 @@ describe('Login', () => {
     throw new Error('Invalid username format did not throw error');
   });
 
-  it('Login using invalid credentials throws error', async () => {
+  test('Login using invalid credentials throws error', async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     try {
@@ -36,7 +36,7 @@ describe('Login', () => {
     throw new Error('Invalid credentials did not throw error');
   });
 
-  it('Login using valid credentials works', async () => {
+  test.skip('Login using valid credentials works', async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     try {
