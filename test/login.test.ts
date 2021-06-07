@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import { login } from '../src';
+import { login } from '../src/login';
 
 describe('Login', () => {
   test('Login using invalid format username throws error', async () => {
