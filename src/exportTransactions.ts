@@ -33,24 +33,29 @@ export const exportTransactions = async (
   const startDateFormatted = format(startDate, 'dd/MM/yyyy');
   const endDateFormatted = format(endDate, 'dd/MM/yyyy');
 
+  console.log(`Setting start date '${startDateFormatted}'`);
   await page.click('#DateRange_StartDate', { clickCount: 3 });
   await page.type('#DateRange_StartDate', startDateFormatted);
 
+  console.log(`Setting end date '${endDateFormatted}'`);
   await page.click('#DateRange_EndDate', { clickCount: 3 });
   await page.type('#DateRange_EndDate', endDateFormatted);
 
+  console.log(`Selecting account '${accountName}'`);
   await page.type('#Accounts_1', accountName);
   await page.waitForTimeout(2000);
   await page.waitForSelector('.autosuggest-suggestions:first-child');
   await page.click('.autosuggest-suggestions:first-child');
 
+  console.log(`Setting export format '${exportFormat}'`);
   await page.waitForTimeout(2000);
   const fileTypeSelector = getFileTypeSelector(exportFormat);
   await page.waitForSelector(fileTypeSelector);
   await page.click(fileTypeSelector);
 
   const tempDir = tmp.dirSync();
-  console.log(`Exporting transaction file to '${tempDir.name}'`);
+
+  console.log(`Exporting transactions to '${tempDir.name}'`);
 
   const client = await page.target().createCDPSession();
   await client.send('Page.setDownloadBehavior', {
@@ -62,6 +67,7 @@ export const exportTransactions = async (
   let transactionsFile = '';
 
   while (true) {
+    console.log(`Checking for downloaded file in '${tempDir.name}'`);
     const downloadDirFiles = fs.readdirSync(tempDir.name);
 
     if (downloadDirFiles.length > 0) {
