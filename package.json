@@ -31,7 +31,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@geofflamrock/westpac-au-scraper",
+  "name": "westpac-au-scraper",
   "author": "Geoff Lamrock",
   "module": "dist/westpac-au-scraper.esm.js",
   "size-limit": [
