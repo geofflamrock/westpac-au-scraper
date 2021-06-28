@@ -19,6 +19,17 @@ function getFileTypeSelector(exportFormat: ExportFormat): string {
   }
 }
 
+function getFileExtension(exportFormat: ExportFormat): string {
+  switch (exportFormat) {
+    case ExportFormat.Ofx: {
+      return '.ofx';
+    }
+    default: {
+      throw new Error('Unknown export format');
+    }
+  }
+}
+
 export const exportTransactions = async (
   page: Page,
   accountName: string,
@@ -31,7 +42,7 @@ export const exportTransactions = async (
     downloadDirectory?: string;
   } = {
     debug: false,
-    downloadTimeoutInMs: 30000,
+    downloadTimeoutInMs: 300000,
   }
 ): Promise<string> => {
   await page.goto(
@@ -78,6 +89,8 @@ export const exportTransactions = async (
   if (downloadDirectory === undefined) {
     const tempDir = tmp.dirSync();
     downloadDirectory = tempDir.name;
+  } else {
+    fs.mkdirSync(path.resolve(downloadDirectory));
   }
 
   if (options.debug)
@@ -101,10 +114,20 @@ export const exportTransactions = async (
     if (options.debug)
       console.log(`Checking for downloaded file in '${downloadDirectory}'`);
 
-    const downloadDirFiles = fs.readdirSync(downloadDirectory);
+    const downloadDirFiles = fs.readdirSync(downloadDirectory, {
+      withFileTypes: true,
+    });
 
     if (downloadDirFiles.length > 0) {
-      transactionsFile = path.join(downloadDirectory, downloadDirFiles[0]);
+      downloadDirFiles.forEach(file => {
+        if (
+          file.isFile() &&
+          path.extname(file.name).toLowerCase() ==
+            getFileExtension(exportFormat).toLowerCase()
+        )
+          transactionsFile = file.name;
+      });
+
       break;
     }
 
