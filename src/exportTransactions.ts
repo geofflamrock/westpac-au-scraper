@@ -125,7 +125,7 @@ export const exportTransactions = async (
           path.extname(file.name).toLowerCase() ==
             getFileExtension(exportFormat).toLowerCase()
         )
-          transactionsFile = file.name;
+          transactionsFile = path.join(downloadDirectory || '', file.name);
       });
 
       break;
