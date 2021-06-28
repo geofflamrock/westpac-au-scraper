@@ -28,6 +28,7 @@ export const exportTransactions = async (
   options: {
     debug?: boolean;
     downloadTimeoutInMs?: number;
+    downloadDirectory?: string;
   } = {
     debug: false,
     downloadTimeoutInMs: 30000,
@@ -72,14 +73,20 @@ export const exportTransactions = async (
   await page.waitForSelector(fileTypeSelector);
   await page.click(fileTypeSelector);
 
-  const tempDir = tmp.dirSync();
+  let downloadDirectory = options.downloadDirectory;
 
-  if (options.debug) console.log(`Exporting transactions to '${tempDir.name}'`);
+  if (downloadDirectory === undefined) {
+    const tempDir = tmp.dirSync();
+    downloadDirectory = tempDir.name;
+  }
+
+  if (options.debug)
+    console.log(`Exporting transactions to '${downloadDirectory}'`);
 
   const client = await page.target().createCDPSession();
   await client.send('Page.setDownloadBehavior', {
     behavior: 'allow',
-    downloadPath: tempDir.name,
+    downloadPath: downloadDirectory,
   });
   await page.click('.btn-actions > .btn.export-link');
 
@@ -92,12 +99,12 @@ export const exportTransactions = async (
 
   while (true) {
     if (options.debug)
-      console.log(`Checking for downloaded file in '${tempDir.name}'`);
+      console.log(`Checking for downloaded file in '${downloadDirectory}'`);
 
-    const downloadDirFiles = fs.readdirSync(tempDir.name);
+    const downloadDirFiles = fs.readdirSync(downloadDirectory);
 
     if (downloadDirFiles.length > 0) {
-      transactionsFile = path.join(tempDir.name, downloadDirFiles[0]);
+      transactionsFile = path.join(downloadDirectory, downloadDirFiles[0]);
       break;
     }
 
